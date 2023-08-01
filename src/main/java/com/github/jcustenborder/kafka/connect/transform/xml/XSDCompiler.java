@@ -19,7 +19,7 @@ import com.github.jcustenborder.kafka.connect.xml.Connectable;
 import com.github.jcustenborder.kafka.connect.xml.KafkaConnectPlugin;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import com.google.common.io.Files;
+import java.nio.file.Files;
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.api.S2JJAXBModel;
@@ -54,17 +54,22 @@ import java.util.stream.StreamSupport;
 
 public class XSDCompiler implements Closeable {
   private static final Logger log = LoggerFactory.getLogger(XSDCompiler.class);
+
   final File tempDirectory;
   final URLClassLoader classLoader;
   final FromXmlConfig config;
 
   public XSDCompiler(FromXmlConfig config) {
     this.config = config;
-    this.tempDirectory = Files.createTempDir();
+    try{
+      this.tempDirectory = Files.createTempDirectory(config.xjcPackage).toFile();
+    } catch (IOException tempE) {
+      throw new IllegalStateException(tempE);
+    }
     try {
       this.classLoader = new URLClassLoader(
           new URL[]{
-              tempDirectory.toURL()
+              tempDirectory.toURI().toURL()
           },
           Connectable.class.getClassLoader()
       );
@@ -114,13 +119,7 @@ public class XSDCompiler implements Closeable {
     log.trace("compileContext() - Building model to {}", tempDirectory);
     jCodeModel.build(tempDirectory);
 
-    List<File> sourceFiles =
-        StreamSupport.stream(
-            Files.fileTraverser().breadthFirst(tempDirectory).spliterator(),
-            false
-        )
-            .filter(File::isFile)
-            .collect(Collectors.toList());
+    List<File> sourceFiles = getFilesFromTempDirectory();
 
     if (log.isTraceEnabled()) {
       log.trace("compileContext() - found {} file(s).\n{}",
@@ -157,12 +156,14 @@ public class XSDCompiler implements Closeable {
       if (Boolean.FALSE.equals(compilerTask.call())) {
         log.error("Exception while compiling source.");
         for (Diagnostic<? extends JavaFileObject> diagnostic : diagnostics.getDiagnostics()) {
-          log.error(
-              "Error on line {} in {}\n{}",
-              diagnostic.getLineNumber(),
-              diagnostic.getSource().toUri(),
-              diagnostic.getMessage(locale)
-          );
+          if (log.isErrorEnabled()) {
+            log.error(
+                "Error on line {} in {}\n{}",
+                diagnostic.getLineNumber(),
+                diagnostic.getSource().toUri(),
+                diagnostic.getMessage(locale)
+            );
+          }
         }
       }
     }
@@ -196,6 +197,19 @@ public class XSDCompiler implements Closeable {
   @Override
   public void close() throws IOException {
     // noop
+  }
+
+  public List<File> getFilesFromTempDirectory() {
+    return StreamSupport.stream(
+            Files.fileTraverser().breadthFirst(getTempDirectory()).spliterator(),
+            false
+    )
+    .filter(File::isFile)
+    .collect(Collectors.toList());
+  }
+
+  public File getTempDirectory() {
+    return tempDirectory;
   }
 
 }

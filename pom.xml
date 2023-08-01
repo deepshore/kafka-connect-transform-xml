@@ -27,7 +27,7 @@
         <version>2.8.0-1</version>
     </parent>
     <artifactId>kafka-connect-transform-xml</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>0.1.5-SNAPSHOT</version>
     <name>kafka-connect-transform-xml</name>
     <url>https://github.com/jcustenborder/kafka-connect-transform-xml</url>
     <inceptionYear>2017</inceptionYear>
@@ -119,7 +119,7 @@
                                 <tag>Xml</tag>
                             </tags>
                             <title>Xml Transformation</title>
-                            <supportUrl>${pom.issueManagement.url}</supportUrl>
+                            <supportUrl>${project.issueManagement.url}</supportUrl>
                             <supportSummary>Support provided through community involvement.</supportSummary>
                         </configuration>
                     </execution>

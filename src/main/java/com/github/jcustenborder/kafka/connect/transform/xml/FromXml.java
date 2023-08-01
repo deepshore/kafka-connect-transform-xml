@@ -30,23 +30,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
-import java.io.StringReader;
+import java.io.*;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Title("FromXML")
 @Description("This transformation is used to read XML data stored as bytes or a string and convert " +
@@ -63,6 +56,10 @@ public abstract class FromXml<R extends ConnectRecord<R>> extends BaseKeyValueTr
   Marshaller marshaller;
   XSDCompiler compiler;
   String evaluatedKey;
+
+  private List<File> generatedSourceFiles;
+
+  private List<File> generatedCompiledFiles;
 
   protected FromXml(boolean isKey) {
     super(isKey);
@@ -166,12 +163,30 @@ public abstract class FromXml<R extends ConnectRecord<R>> extends BaseKeyValueTr
       throw new IllegalStateException(e);
     }
 
+    this.generatedSourceFiles = this.compiler.getFilesFromTempDirectory()
+            .stream()
+            .filter(file -> file.getName().matches("^.*\\.java"))
+            .collect(Collectors.toList());
+
+    this.generatedCompiledFiles = this.compiler.getFilesFromTempDirectory()
+            .stream()
+            .filter(file -> file.getName().matches("^.*\\.class"))
+            .collect(Collectors.toList());
+
     try {
       this.unmarshaller = context.createUnmarshaller();
       this.marshaller = context.createMarshaller();
     } catch (JAXBException e) {
       throw new IllegalStateException(e);
     }
+  }
+
+  public List<File> getGeneratedSourceFiles() {
+    return generatedSourceFiles;
+  }
+
+  public List<File> getGeneratedCompiledFiles() {
+    return generatedCompiledFiles;
   }
 
 
