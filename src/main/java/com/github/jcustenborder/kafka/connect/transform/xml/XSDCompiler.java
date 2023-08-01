@@ -19,7 +19,6 @@ import com.github.jcustenborder.kafka.connect.xml.Connectable;
 import com.github.jcustenborder.kafka.connect.xml.KafkaConnectPlugin;
 import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
-import java.nio.file.Files;
 import com.sun.codemodel.JCodeModel;
 import com.sun.tools.xjc.Options;
 import com.sun.tools.xjc.api.S2JJAXBModel;
@@ -30,12 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
-import javax.tools.Diagnostic;
-import javax.tools.DiagnosticCollector;
-import javax.tools.JavaCompiler;
-import javax.tools.JavaFileObject;
-import javax.tools.StandardJavaFileManager;
-import javax.tools.ToolProvider;
+import javax.tools.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.Closeable;
@@ -44,13 +38,11 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
+import java.util.stream.Stream;
 
 public class XSDCompiler implements Closeable {
   private static final Logger log = LoggerFactory.getLogger(XSDCompiler.class);
@@ -200,12 +192,13 @@ public class XSDCompiler implements Closeable {
   }
 
   public List<File> getFilesFromTempDirectory() {
-    return StreamSupport.stream(
-            Files.fileTraverser().breadthFirst(getTempDirectory()).spliterator(),
-            false
-    )
-    .filter(File::isFile)
-    .collect(Collectors.toList());
+
+    try (Stream<Path> filepath = Files.walk(getTempDirectory().toPath())) {
+      return filepath.filter(path -> new File(path.toUri()).isFile()).map(path -> new File(path.toUri())).collect(Collectors.toList());
+    } catch (IOException e) {
+      log.warn("error getting tempfiles.", e);
+      return Collections.emptyList();
+    }
   }
 
   public File getTempDirectory() {
