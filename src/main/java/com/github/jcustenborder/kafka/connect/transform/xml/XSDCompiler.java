@@ -29,7 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.InputSource;
 
-import javax.tools.*;
+import javax.tools.Diagnostic;
+import javax.tools.DiagnosticCollector;
+import javax.tools.JavaCompiler;
+import javax.tools.JavaFileObject;
+import javax.tools.StandardJavaFileManager;
+import javax.tools.ToolProvider;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import java.io.Closeable;
@@ -40,9 +45,14 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.Collections;
 
 public class XSDCompiler implements Closeable {
   private static final Logger log = LoggerFactory.getLogger(XSDCompiler.class);
@@ -53,11 +63,12 @@ public class XSDCompiler implements Closeable {
 
   public XSDCompiler(FromXmlConfig config) {
     this.config = config;
-    try{
+    try {
       this.tempDirectory = Files.createTempDirectory(config.xjcPackage).toFile();
     } catch (IOException tempE) {
       throw new IllegalStateException(tempE);
     }
+
     try {
       this.classLoader = new URLClassLoader(
           new URL[]{
