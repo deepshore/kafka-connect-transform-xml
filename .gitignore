@@ -14,3 +14,5 @@ target
 .okhttpcache
 *.iml
 .idea
+
+.mvn/settings.xml
