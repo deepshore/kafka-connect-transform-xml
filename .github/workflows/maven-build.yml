@@ -37,14 +37,15 @@ jobs:
           GH_DEPLOY_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: prepare artifact
+        if: startsWith(github.ref, 'refs/tags/')
         run: |
-          cd target/components/packages
-          cp *.zip ${{ github.event.repository.name }}-${{ github.ref_name }}.zip
+          cd target
+          cp *.jar ${{ github.event.repository.name }}-${{ github.ref_name }}.jar
           ls -lah
 
       - name: Release
         uses: fnkr/github-action-ghr@v1
         if: startsWith(github.ref, 'refs/tags/')
         env:
-          GHR_PATH: target/components/packages/${{ github.event.repository.name }}-${{ github.ref_name }}.zip
+          GHR_PATH: target/${{ github.event.repository.name }}-${{ github.ref_name }}.jar
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
