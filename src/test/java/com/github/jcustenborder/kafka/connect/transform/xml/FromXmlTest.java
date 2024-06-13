@@ -15,7 +15,6 @@
  */
 package com.github.jcustenborder.kafka.connect.transform.xml;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.io.Files;
 import org.apache.kafka.connect.connector.ConnectRecord;
 import org.apache.kafka.connect.data.Field;
@@ -30,6 +29,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -42,9 +42,9 @@ class FromXmlTest {
     File file = new File("src/test/resources/com/github/jcustenborder/kafka/connect/transform/xml/books.xsd");
     this.transform = new FromXml.Value();
     this.transform.configure(
-        ImmutableMap.of(
-                FromXmlConfig.SCHEMA_PATH_CONFIG, file.getAbsoluteFile().toURL().toString(),
-                FromXmlConfig.XPATH_FOR_RECORD_KEY_CONFIG, "concat(descendant::book/author[1]/text(),descendant::book/title[1]/text())"
+        Map.ofEntries(
+                Map.entry(FromXmlConfig.SCHEMA_PATH_CONFIG, file.getAbsoluteFile().toURL().toString()),
+                Map.entry(FromXmlConfig.XPATH_FOR_RECORD_KEY_CONFIG, "concat(descendant::book/author[1]/text(),descendant::book/title[1]/text())")
         )
     );
   }
@@ -62,13 +62,13 @@ class FromXmlTest {
         new Date().getTime()
     );
 
-    ConnectRecord record = this.transform.apply(inputRecord);
+    ConnectRecord connectRecord = this.transform.apply(inputRecord);
 
-    Schema schema = record.valueSchema();
+    Schema schema = connectRecord.valueSchema();
     assertThat(schema.name()).isEqualTo("com.github.jcustenborder.kafka.connect.transform.xml.model.BooksForm");
     assertThat(schema.fields()).extracting(Field::name).containsOnly("book");
 
-    Struct actualRecordStruct = (Struct) record.value();
+    Struct actualRecordStruct = (Struct) connectRecord.value();
 
     List<Object> book = actualRecordStruct.getArray("book");
     assertThat(book).hasSize(2);
@@ -77,7 +77,7 @@ class FromXmlTest {
     assertThat(book1.getString("author")).isEqualTo("Writer");
     assertThat(book1.getString("genre")).isEqualTo("Fiction");
     assertThat(book1.getFloat32("price")).isEqualTo(44.95f);
-    assertThat(book1.getString("pubDate")).isEqualTo("2000-10-01");
+    assertThat(book1.getString("pub_date")).isEqualTo("2000-10-01");
     assertThat(book1.getString("review")).isEqualTo("An amazing story of nothing.");
     assertThat(book1.getString("id")).isEqualTo("bk001");
 
@@ -85,11 +85,11 @@ class FromXmlTest {
     assertThat(book2.getString("author")).isEqualTo("Poet");
     assertThat(book2.getString("genre")).isEqualTo("Poem");
     assertThat(book2.getFloat32("price")).isEqualTo(24.95f);
-    assertThat(book2.getString("pubDate")).isEqualTo("2000-10-01");
+    assertThat(book2.getString("pub_date")).isEqualTo("2000-10-01");
     assertThat(book2.getString("review")).isEqualTo("Least poetic poems.");
     assertThat(book2.getString("id")).isEqualTo("bk002");
     
-    assertThat(record.key()).isEqualTo("WriterThe First Book");
+    assertThat(connectRecord.key()).isEqualTo("WriterThe First Book");
 
     assertThat(transform.getGeneratedSourceFiles()).hasSize(4);
     assertThat(transform.getGeneratedCompiledFiles()).hasSize(4);

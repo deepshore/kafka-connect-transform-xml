@@ -236,59 +236,6 @@
                     <target>17</target>
                 </configuration>
             </plugin>
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>3.0</version>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-                <configuration>
-                    <header>com/mycila/maven/plugin/license/templates/APACHE-2.txt</header>
-                    <properties>
-                        <owner>Jeremy Custenborder</owner>
-                        <email>jcustenborder@gmail.com</email>
-                    </properties>
-                    <excludes>
-                        <exclude>**/README</exclude>
-                        <exclude>src/test/resources/**</exclude>
-                        <exclude>src/main/resources/**</exclude>
-                        <exclude>src/assembly/**</exclude>
-                        <exclude>target/generated-sources/antlr4/**</exclude>
-                    </excludes>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>io.confluent</groupId>
-                <artifactId>kafka-connect-maven-plugin</artifactId>
-                <version>0.11.2</version>
-                <executions>
-                    <execution>
-                        <id>hub</id>
-                        <goals>
-                            <goal>kafka-connect</goal>
-                        </goals>
-                        <configuration>
-                            <confluentControlCenterIntegration>true</confluentControlCenterIntegration>
-                            <documentationUrl>https://jcustenborder.github.io/kafka-connect-documentation/projects/kafka-connect-transform-xml/</documentationUrl>
-                            <componentTypes>
-                                <componentType>transform</componentType>
-                            </componentTypes>
-                            <tags>
-                                <tag>Transform</tag>
-                                <tag>Xml</tag>
-                            </tags>
-                            <title>Xml Transformation</title>
-                            <supportUrl>${project.issueManagement.url}</supportUrl>
-                            <supportSummary>Support provided through community involvement.</supportSummary>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
         </plugins>
     </build>
     <distributionManagement>
