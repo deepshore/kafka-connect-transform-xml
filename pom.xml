@@ -24,7 +24,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.jcustenborder.kafka.connect</groupId>
     <artifactId>kafka-connect-transform-xml</artifactId>
-    <version>0.1.5.1-SNAPSHOT</version>
+    <version>0.1.5.2-SNAPSHOT</version>
     <name>kafka-connect-transform-xml</name>
     <url>https://github.com/deepshore/kafka-connect-transform-xml</url>
     <inceptionYear>2024</inceptionYear>
