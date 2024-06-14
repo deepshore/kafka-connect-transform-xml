@@ -22,7 +22,7 @@
         xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.deepshore.kafka.connect</groupId>
+    <groupId>com.github.jcustenborder.kafka.connect</groupId>
     <artifactId>kafka-connect-transform-xml</artifactId>
     <version>0.1.5.1-SNAPSHOT</version>
     <name>kafka-connect-transform-xml</name>
@@ -60,17 +60,25 @@
                 <role>maintainer</role>
             </roles>
         </developer>
+        <developer>
+            <name>Ferdi Gueran</name>
+            <email>ferdi.gueran@deepshore.de</email>
+            <url>https://github.com/deepshore</url>
+            <roles>
+                <role>maintainer</role>
+            </roles>
+        </developer>
     </developers>
     <scm>
-        <connection>scm:git:https://github.com/jcustenborder/kafka-connect-transform-xml.git
+        <connection>scm:git:https://github.com/deepshore/kafka-connect-transform-xml.git
         </connection>
-        <developerConnection>scm:git:git@github.com:jcustenborder/kafka-connect-transform-xml.git
+        <developerConnection>scm:git:git@github.com:deepshore/kafka-connect-transform-xml.git
         </developerConnection>
-        <url>https://github.com/jcustenborder/kafka-connect-transform-xml</url>
+        <url>https://github.com/deepshore/kafka-connect-transform-xml</url>
     </scm>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/jcustenborder/kafka-connect-transform-xml/issues</url>
+        <url>https://github.com/deepshore/kafka-connect-transform-xml/issues</url>
     </issueManagement>
     <dependencies>
             <dependency>
