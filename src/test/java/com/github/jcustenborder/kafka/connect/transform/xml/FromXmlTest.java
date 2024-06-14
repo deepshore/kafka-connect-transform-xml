@@ -27,6 +27,9 @@ import org.junit.jupiter.api.Test;
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.text.ParseException;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +53,7 @@ class FromXmlTest {
   }
 
   @Test
-  void apply() throws IOException {
+  void apply() throws IOException, ParseException {
     final byte[] input = Files.toByteArray(new File("src/test/resources/com/github/jcustenborder/kafka/connect/transform/xml/books.xml"));
     final ConnectRecord inputRecord = new SinkRecord(
         "test",
@@ -73,11 +76,14 @@ class FromXmlTest {
     List<Object> book = actualRecordStruct.getArray("book");
     assertThat(book).hasSize(2);
 
+    LocalDate testLocalDate = LocalDate.of(2000, 10, 1);
+    Date testDate = Date.from(testLocalDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
     Struct book1 = (Struct) book.get(0);
     assertThat(book1.getString("author")).isEqualTo("Writer");
     assertThat(book1.getString("genre")).isEqualTo("Fiction");
     assertThat(book1.getFloat32("price")).isEqualTo(44.95f);
-    assertThat(book1.getString("pub_date")).isEqualTo("2000-10-01");
+    assertThat(book1.get("pub_date")).isEqualTo(testDate);
     assertThat(book1.getString("review")).isEqualTo("An amazing story of nothing.");
     assertThat(book1.getString("id")).isEqualTo("bk001");
 
@@ -85,7 +91,7 @@ class FromXmlTest {
     assertThat(book2.getString("author")).isEqualTo("Poet");
     assertThat(book2.getString("genre")).isEqualTo("Poem");
     assertThat(book2.getFloat32("price")).isEqualTo(24.95f);
-    assertThat(book2.getString("pub_date")).isEqualTo("2000-10-01");
+    assertThat(book2.get("pub_date")).isEqualTo(testDate);
     assertThat(book2.getString("review")).isEqualTo("Least poetic poems.");
     assertThat(book2.getString("id")).isEqualTo("bk002");
     
