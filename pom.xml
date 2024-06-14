@@ -166,12 +166,12 @@
         <dependency>
             <groupId>com.github.jcustenborder.kafka.connect</groupId>
             <artifactId>xjc-kafka-connect-plugin</artifactId>
-            <version>0.2.15-SNAPSHOT</version>
+            <version>0.2.15</version>
         </dependency>
         <dependency>
             <groupId>com.github.jcustenborder.kafka.connect</groupId>
             <artifactId>kafka-connect-xml</artifactId>
-            <version>0.2.15-SNAPSHOT</version>
+            <version>0.2.15</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
