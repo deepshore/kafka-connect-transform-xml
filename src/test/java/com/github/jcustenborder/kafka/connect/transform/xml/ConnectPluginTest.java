@@ -46,14 +46,14 @@ import org.slf4j.LoggerFactory;
 import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 
-import javax.xml.bind.annotation.XmlSchemaType;
+import jakarta.xml.bind.annotation.XmlSchemaType;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class ConnectPlugin extends Plugin {
-  private static final Logger log = LoggerFactory.getLogger(ConnectPlugin.class);
+public class ConnectPluginTest extends Plugin {
+  private static final Logger log = LoggerFactory.getLogger(ConnectPluginTest.class);
 
   @Override
   public String getOptionName() {
@@ -117,7 +117,7 @@ public class ConnectPlugin extends Plugin {
   boolean isRequired(JFieldVar fieldVar) {
     for (JAnnotationUse annotationUse : fieldVar.annotations()) {
       log.trace("isRequired() - name = '{}' getAnnotationClass = '{}'", fieldVar.name(), annotationUse.getAnnotationClass().fullName());
-      if (annotationUse.getAnnotationClass().fullName().equals("javax.xml.bind.annotation.XmlElement")) {
+      if (annotationUse.getAnnotationClass().fullName().equals("jakarta.xml.bind.annotation.XmlElement")) {
         StringWriter writer = new StringWriter();
         JFormatter formatter = new JFormatter(writer);
         ((JAnnotationValue) annotationUse.getAnnotationMembers().get("required")).generate(formatter);

@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <!--
 
+    Copyright © 2024 Ferdi Gueran (ferdi.gueran@deepshore.de)
     Copyright © 2017 Jeremy Custenborder (jcustenborder@gmail.com)
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,17 +22,28 @@
         xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>com.github.jcustenborder.kafka.connect</groupId>
-        <artifactId>kafka-connect-parent</artifactId>
-        <version>3.3.1-1</version>
-    </parent>
+    <groupId>com.github.jcustenborder.kafka.connect</groupId>
     <artifactId>kafka-connect-transform-xml</artifactId>
     <version>0.1.5.1-SNAPSHOT</version>
     <name>kafka-connect-transform-xml</name>
-    <url>https://github.com/jcustenborder/kafka-connect-transform-xml</url>
-    <inceptionYear>2017</inceptionYear>
+    <url>https://github.com/deepshore/kafka-connect-transform-xml</url>
+    <inceptionYear>2024</inceptionYear>
     <description>Kafka Connect transformation for handling Xml data based on a XSD. This transformation will convert text based Xml</description>
+    <properties>
+        <java.version>17</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <kafka.version>3.7.0</kafka.version>
+        <connect-utils.version>[0.7.166,0.7.2000)</connect-utils.version>
+        <kafka-connect-style.version>[1.1.0,1.1.1000)</kafka-connect-style.version>
+        <confluent.hub.packaging.version>0.12.0</confluent.hub.packaging.version>
+        <mockito.version>4.8.0</mockito.version>
+        <junit.version>[5.0.0,6.0.0)</junit.version>
+
+        <maven.checkstyle.version>3.1.2</maven.checkstyle.version>
+        <surefire.version>3.2.5</surefire.version>
+        <failsafe.version>2.22.2</failsafe.version>
+    </properties>
     <licenses>
         <license>
             <name>Apache License 2.0</name>
@@ -48,43 +60,135 @@
                 <role>maintainer</role>
             </roles>
         </developer>
+        <developer>
+            <name>Ferdi Gueran</name>
+            <email>ferdi.gueran@deepshore.de</email>
+            <url>https://github.com/deepshore</url>
+            <roles>
+                <role>maintainer</role>
+            </roles>
+        </developer>
     </developers>
     <scm>
-        <connection>scm:git:https://github.com/jcustenborder/kafka-connect-transform-xml.git
+        <connection>scm:git:https://github.com/deepshore/kafka-connect-transform-xml.git
         </connection>
-        <developerConnection>scm:git:git@github.com:jcustenborder/kafka-connect-transform-xml.git
+        <developerConnection>scm:git:git@github.com:deepshore/kafka-connect-transform-xml.git
         </developerConnection>
-        <url>https://github.com/jcustenborder/kafka-connect-transform-xml</url>
+        <url>https://github.com/deepshore/kafka-connect-transform-xml</url>
     </scm>
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/jcustenborder/kafka-connect-transform-xml/issues</url>
+        <url>https://github.com/deepshore/kafka-connect-transform-xml/issues</url>
     </issueManagement>
     <dependencies>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-bom</artifactId>
+                <version>${mockito.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.junit</groupId>
+                <artifactId>junit-bom</artifactId>
+                <version>${junit.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.github.jcustenborder.kafka.connect/connect-utils -->
+            <dependency>
+                <groupId>com.github.jcustenborder.kafka.connect</groupId>
+                <artifactId>connect-utils</artifactId>
+                <version>${connect-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jcustenborder.kafka.connect</groupId>
+                <artifactId>connect-utils-jackson</artifactId>
+                <version>${connect-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.jcustenborder.kafka.connect</groupId>
+                <artifactId>connect-utils-parser</artifactId>
+                <version>${connect-utils.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>31.1-jre</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-json</artifactId>
+                <version>${kafka.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>connect-api</artifactId>
+                <version>${kafka.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka-clients -->
+            <dependency>
+                <groupId>org.apache.kafka</groupId>
+                <artifactId>kafka-clients</artifactId>
+                <version>${kafka.version}</version>
+            </dependency>
+
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>2.17.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.palantir.conjure.java.runtime</groupId>
+            <artifactId>conjure-java-jackson-serialization</artifactId>
+            <version>7.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>1.7.21</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.1.8</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.github.jcustenborder.kafka.connect</groupId>
             <artifactId>xjc-kafka-connect-plugin</artifactId>
-            <version>0.2.14</version>
+            <version>0.2.15</version>
         </dependency>
         <dependency>
             <groupId>com.github.jcustenborder.kafka.connect</groupId>
             <artifactId>kafka-connect-xml</artifactId>
-            <version>0.2.14</version>
+            <version>0.2.15</version>
         </dependency>
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
+            <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-xjc</artifactId>
-            <version>2.3.0</version>
+            <version>4.0.5</version>
         </dependency>
+
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
-            <version>2.3.0</version>
+            <version>4.0.5</version>
         </dependency>
+
         <dependency>
-            <groupId>com.sun.xml.bind</groupId>
+            <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-core</artifactId>
-            <version>2.3.0</version>
+            <version>4.0.5</version>
         </dependency>
         <dependency>
             <groupId>org.assertj</groupId>
@@ -96,31 +200,49 @@
     <build>
         <plugins>
             <plugin>
-                <groupId>io.confluent</groupId>
-                <artifactId>kafka-connect-maven-plugin</artifactId>
-                <version>0.11.2</version>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${surefire.version}</version>
+                <configuration>
+                    <argLine>-Djava.awt.headless=true</argLine>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
                 <executions>
                     <execution>
-                        <id>hub</id>
+                        <id>validate</id>
+                        <phase>validate</phase>
                         <goals>
-                            <goal>kafka-connect</goal>
+                            <goal>check</goal>
                         </goals>
                         <configuration>
-                            <confluentControlCenterIntegration>true</confluentControlCenterIntegration>
-                            <documentationUrl>https://jcustenborder.github.io/kafka-connect-documentation/projects/kafka-connect-transform-xml/</documentationUrl>
-                            <componentTypes>
-                                <componentType>transform</componentType>
-                            </componentTypes>
-                            <tags>
-                                <tag>Transform</tag>
-                                <tag>Xml</tag>
-                            </tags>
-                            <title>Xml Transformation</title>
-                            <supportUrl>${project.issueManagement.url}</supportUrl>
-                            <supportSummary>Support provided through community involvement.</supportSummary>
+                            <configLocation>checkstyle.xml</configLocation>
+                            <encoding>UTF-8</encoding>
+                            <consoleOutput>true</consoleOutput>
+                            <failsOnError>true</failsOnError>
+                            <includeResources>false</includeResources>
+                            <includeTestResources>false</includeTestResources>
+                            <sourceDirectory>${project.build.sourceDirectory}</sourceDirectory>
                         </configuration>
                     </execution>
                 </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>com.github.jcustenborder.kafka.connect</groupId>
+                        <artifactId>kafka-connect-checkstyle</artifactId>
+                        <version>1.0.0.0</version>
+                    </dependency>
+                </dependencies>
+            </plugin>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
+                </configuration>
             </plugin>
         </plugins>
     </build>
