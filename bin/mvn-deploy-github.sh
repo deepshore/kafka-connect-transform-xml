@@ -5,7 +5,7 @@ MVN_SETTINGS_TEMPLATE_FILE=.mvn/settings.xml.tmpl
 MVN_SETTINGS_FILE=.mvn/settings.xml
 POM_FILE=pom.xml
 
-sed -e "s|GH_REPO|${GH_REPO:n.a.}|g" \
+sed -e "s|GH_REPO|${GH_REPO:"n.a."}|g" \
     -e "s|GH_DEPLOY_USERNAME|${GH_DEPLOY_USERNAME:-}|g" \
     -e "s|GH_DEPLOY_TOKEN|${GH_DEPLOY_TOKEN:-}|g" \
     -e "s|CENTRAL_DEPLOY_USERNAME|${CENTRAL_DEPLOY_USERNAME:-}|g" \
