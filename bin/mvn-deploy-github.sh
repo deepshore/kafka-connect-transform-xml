@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e -o pipefail
 
 MVN_SETTINGS_TEMPLATE_FILE=.mvn/settings.xml.tmpl
 MVN_SETTINGS_FILE=.mvn/settings.xml
