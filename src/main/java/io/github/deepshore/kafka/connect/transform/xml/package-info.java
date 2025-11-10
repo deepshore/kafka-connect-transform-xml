@@ -18,7 +18,7 @@
     @Title("Xml Transformations")
 @PluginName("kafka-connect-transform-xml")
 @PluginOwner("jcustenborder")
-package com.github.jcustenborder.kafka.connect.transform.xml;
+package io.github.deepshore.kafka.connect.transform.xml;
 
 import com.github.jcustenborder.kafka.connect.utils.config.Introduction;
 import com.github.jcustenborder.kafka.connect.utils.config.PluginName;

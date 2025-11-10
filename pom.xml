@@ -22,9 +22,9 @@
         xmlns="http://maven.apache.org/POM/4.0.0"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.github.jcustenborder.kafka.connect</groupId>
+    <groupId>io.github.deepshore.kafka.connect</groupId>
     <artifactId>kafka-connect-transform-xml</artifactId>
-    <version>0.1.5.2-SNAPSHOT</version>
+    <version>0.1.5.4-SNAPSHOT</version>
     <name>kafka-connect-transform-xml</name>
     <url>https://github.com/deepshore/kafka-connect-transform-xml</url>
     <inceptionYear>2024</inceptionYear>
@@ -245,15 +245,24 @@
                     <target>${java.version}</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.9.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central-sonatype</publishingServerId>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
-    <distributionManagement>
+<!--    <distributionManagement>
         <repository>
             <id>github</id>
             <name>GitHub deepshore Apache Maven Packages</name>
             <url>https://maven.pkg.github.com/deepshore/kafka-connect-transform-xml</url>
         </repository>
-    </distributionManagement>
+    </distributionManagement>-->
 
     <repositories>
         <repository>
