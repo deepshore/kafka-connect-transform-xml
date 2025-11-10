@@ -47,9 +47,12 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.File;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Title("FromXML")
 @Description("This transformation is used to read XML data stored as bytes or a string and convert " +
@@ -137,14 +140,10 @@ public abstract class FromXml<R extends ConnectRecord<R>> extends BaseKeyValueTr
     this.evaluatedKey = null;
     this.extractKeyByXpath(element);
 
-    if (element instanceof Connectable) {
-      Connectable connectable = (Connectable) element;
-      struct = connectable.toStruct();
-    } else if (element instanceof JAXBElement) {
-      JAXBElement jaxbElement = (JAXBElement) element;
-
-      if (jaxbElement.getValue() instanceof Connectable) {
-        Connectable connectable = (Connectable) jaxbElement.getValue();
+    if (element instanceof Connectable ctl) {
+      struct = ctl.toStruct();
+    } else if (element instanceof JAXBElement jaxbElement) {
+      if (jaxbElement.getValue() instanceof Connectable connectable) {
         struct = connectable.toStruct();
       } else {
         throw new DataException(
@@ -173,15 +172,25 @@ public abstract class FromXml<R extends ConnectRecord<R>> extends BaseKeyValueTr
       throw new IllegalStateException(e);
     }
 
-    this.generatedSourceFiles = this.compiler.getFilesFromTempDirectory()
-            .stream()
-            .filter(file -> file.getName().matches("^.*\\.java"))
-            .collect(Collectors.toList());
+    try (Stream<Path> walk = Files.walk(this.compiler.getTempDirectory())) {
+      this.generatedSourceFiles = walk
+              .filter(Files::isRegularFile)
+              .filter(p -> p.getFileName().toString().endsWith(".java"))
+              .map(Path::toFile)
+              .collect(Collectors.toList());
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
 
-    this.generatedCompiledFiles = this.compiler.getFilesFromTempDirectory()
-            .stream()
-            .filter(file -> file.getName().matches("^.*\\.class"))
-            .collect(Collectors.toList());
+    try (Stream<Path> walk = Files.walk(this.compiler.getTempDirectory())) {
+      this.generatedCompiledFiles = walk
+              .filter(Files::isRegularFile)
+              .filter(p -> p.getFileName().toString().endsWith(".class"))
+              .map(Path::toFile)
+              .collect(Collectors.toList());
+    } catch (IOException e) {
+      throw new IllegalStateException(e);
+    }
 
     try {
       this.unmarshaller = context.createUnmarshaller();

@@ -52,7 +52,6 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import java.util.Collections;
 
 public class XSDCompiler implements Closeable {
   private static final Logger log = LoggerFactory.getLogger(XSDCompiler.class);
@@ -119,15 +118,23 @@ public class XSDCompiler implements Closeable {
 
     JCodeModel jCodeModel = model.generateCode(null, new ConnectErrorListener(log));
 
-    log.trace("compileContext() - Building model to {}", tempDirectory);
+    log.trace("compileContext() - Building model to {}",  getTempDirectory());
     jCodeModel.build(tempDirectory);
 
-    List<File> sourceFiles = getFilesFromTempDirectory();
+    List<File> sourceFiles = new ArrayList<>();
+
+    try (Stream<Path> walk = Files.walk(getTempDirectory())) {
+      sourceFiles.addAll(walk
+              .filter(Files::isRegularFile)
+              .filter(p -> p.getFileName().toString().endsWith(".java"))
+              .map(Path::toFile)
+              .collect(Collectors.toList()));
+    }
 
     if (log.isTraceEnabled()) {
       log.trace("compileContext() - found {} file(s).\n{}",
-          sourceFiles.size(),
-          Joiner.on('\n').join(sourceFiles)
+              sourceFiles.size(),
+              Joiner.on('\n').join(sourceFiles)
       );
     }
 
@@ -202,18 +209,8 @@ public class XSDCompiler implements Closeable {
     // noop
   }
 
-  public List<File> getFilesFromTempDirectory() {
-
-    try (Stream<Path> filepath = Files.walk(getTempDirectory().toPath())) {
-      return filepath.filter(path -> new File(path.toUri()).isFile()).map(path -> new File(path.toUri())).collect(Collectors.toList());
-    } catch (IOException e) {
-      log.warn("error getting tempfiles.", e);
-      return Collections.emptyList();
-    }
-  }
-
-  public File getTempDirectory() {
-    return tempDirectory;
+  public Path getTempDirectory() {
+    return tempDirectory.toPath();
   }
 
 }
