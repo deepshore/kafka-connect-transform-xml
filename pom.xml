@@ -164,14 +164,14 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.github.jcustenborder.kafka.connect</groupId>
+            <groupId>io.github.selamanse.kafka.connect</groupId>
             <artifactId>xjc-kafka-connect-plugin</artifactId>
-            <version>0.2.15</version>
+            <version>0.2.16</version>
         </dependency>
         <dependency>
-            <groupId>com.github.jcustenborder.kafka.connect</groupId>
+            <groupId>io.github.selamanse.kafka.connect</groupId>
             <artifactId>kafka-connect-xml</artifactId>
-            <version>0.2.15</version>
+            <version>0.2.16</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
