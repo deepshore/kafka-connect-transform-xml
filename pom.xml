@@ -41,7 +41,7 @@
         <junit.version>[5.0.0,6.0.0)</junit.version>
 
         <maven.checkstyle.version>3.6.0</maven.checkstyle.version>
-        <surefire.version>3.2.5</surefire.version>
+        <surefire.version>3.5.4</surefire.version>
         <failsafe.version>2.22.2</failsafe.version>
     </properties>
     <licenses>
