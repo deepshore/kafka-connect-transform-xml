@@ -15,7 +15,7 @@ sed -e "s|GH_REPO|${GH_REPO}|g" \
 
 if [[ $GITHUB_REF_NAME == v* ]]; then
   echo "creating release version ${GITHUB_REF_NAME#v}"
-  mvn -P ${PUBLISH_PROFILE} -s ${MVN_SETTINGS_FILE} --no-transfer-progress --batch-mode release:prepare -DpushChanges=false -DreleaseVersion=${GITHUB_REF_NAME#v} || true
+  mvn -s ${MVN_SETTINGS_FILE} -P ${PUBLISH_PROFILE} -B -ntp versions:set -DnewVersion="${GITHUB_REF_NAME#v}" -DgenerateBackupPoms=false || true
 fi
 
 mvn -P ${PUBLISH_PROFILE} -s ${MVN_SETTINGS_FILE} --no-transfer-progress --batch-mode deploy -Dlicense.skip=true
